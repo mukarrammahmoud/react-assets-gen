@@ -1,13 +1,19 @@
 {
-  "name": "vite-project",
+  "name": "react-assets-gen",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "assets:gen": "node cli/dist/index.js",
+    "assets:watch": "node cli/dist/index.js --watch",
+    "assets:verbose": "node cli/dist/index.js --verbose",
+    "cli:build": "cd cli && npm run build",
+    "predev": "npm run assets:gen",
+    "prebuild": "npm run assets:gen"
   },
   "dependencies": {
     "react": "^19.2.0",

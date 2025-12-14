@@ -1,73 +1,362 @@
-# React + TypeScript + Vite
+# React Assets Gen
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Production-ready React Assets Code Generator - Type-safe asset imports for React projects, similar to Flutter Assets Gen.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+✨ **Type-Safe** - Generate strongly-typed TypeScript definitions for all your assets  
+🔄 **Watch Mode** - Automatically regenerate on file changes  
+📁 **Nested Structure** - Maintains your folder hierarchy in the generated code  
+🎨 **SVG Support** - Optional React component exports for SVGs (works with Vite/SVGR)  
+⚙️ **Configurable** - JSON configuration file support  
+🚀 **Production Ready** - Clean, well-typed, production-grade code  
+📦 **Zero Runtime Dependencies** - Generated file has no runtime dependencies  
 
-## React Compiler
+## Supported Asset Types
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Images**: `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, `.avif`
+- **SVG**: `.svg` (with optional React component export)
+- **Fonts**: `.woff`, `.woff2`, `.ttf`, `.otf`, `.eot`
+- **Videos**: `.mp4`, `.webm`, `.ogg`
+- **Audio**: `.mp3`, `.wav`, `.ogg`, `.m4a`
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### As a Dev Dependency (Recommended)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# Using npm
+npm install --save-dev react-assets-gen
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Using pnpm
+pnpm add -D react-assets-gen
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Using yarn
+yarn add -D react-assets-gen
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Global Installation
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm install -g react-assets-gen
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
+## Quick Start
+
+### 1. Create Assets Directory
+
+Create an `assets/` folder in your project root:
+
+```
+my-react-app/
+├── assets/
+│   ├── images/
+│   │   ├── logo.png
+│   │   └── hero-bg.webp
+│   ├── icons/
+│   │   ├── close.svg
+│   │   └── menu.svg
+│   └── fonts/
+│       └── custom-font.woff2
+├── src/
+└── package.json
+```
+
+### 2. Run the Generator
+
+```bash
+# If installed locally
+npx assets-gen
+
+# If installed globally
+assets-gen
+```
+
+### 3. Use Generated Assets
+
+```tsx
+import { Assets } from '@/generated/assets';
+
+function App() {
+  return (
+    <div>
+      <img src={Assets.images.logo} alt="Logo" />
+      <img src={Assets.images.heroBg} alt="Hero" />
+    </div>
+  );
+}
+```
+
+### 4. Use SVG Components (Optional)
+
+If SVG components are enabled:
+
+```tsx
+import { SvgComponents } from '@/generated/assets';
+
+function Header() {
+  return (
+    <header>
+      <SvgComponents.icons.menu />
+      <SvgComponents.icons.close />
+    </header>
+  );
+}
+```
+
+## Configuration
+
+Create an `assets-gen.config.json` file in your project root:
+
+```json
+{
+  "assetsDir": "assets",
+  "output": "src/generated/assets.ts",
+  "svg": {
+    "asComponent": true
+  },
+  "verbose": false
+}
+```
+
+### Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `assetsDir` | `string` | `"assets"` | Directory containing your assets (relative to project root) |
+| `output` | `string` | `"src/generated/assets.ts"` | Output file path (relative to project root) |
+| `svg.asComponent` | `boolean` | `true` | Generate React component exports for SVGs |
+| `verbose` | `boolean` | `false` | Enable verbose logging |
+
+## CLI Usage
+
+```bash
+assets-gen [options]
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `-c, --config <path>` | Path to config file |
+| `-w, --watch` | Watch assets directory for changes |
+| `-v, --verbose` | Enable verbose logging |
+| `--assets-dir <path>` | Assets directory (overrides config) |
+| `--output <path>` | Output file path (overrides config) |
+| `--version` | Show version number |
+| `--help` | Show help |
+
+### Examples
+
+```bash
+# Generate once
+assets-gen
+
+# Watch mode (auto-regenerate on changes)
+assets-gen --watch
+
+# Custom config file
+assets-gen --config custom-config.json
+
+# Override assets directory
+assets-gen --assets-dir public/assets
+
+# Verbose output
+assets-gen --verbose
+```
+
+## Integration with Build Tools
+
+### Vite
+
+For SVG React components to work with Vite, install `vite-plugin-svgr`:
+
+```bash
+npm install --save-dev vite-plugin-svgr
+```
+
+Update `vite.config.ts`:
+
+```ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import svgr from 'vite-plugin-svgr';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    svgr(), // Enable SVG as React components
+  ],
+});
+```
+
+### Package.json Scripts
+
+Add scripts to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "assets:gen": "assets-gen",
+    "assets:watch": "assets-gen --watch",
+    "predev": "assets-gen",
+    "prebuild": "assets-gen"
+  }
+}
+```
+
+This ensures assets are generated before dev/build.
+
+## Generated File Structure
+
+Given this asset structure:
+
+```
+assets/
+├── images/
+│   ├── logo.png
+│   └── products/
+│       └── item-1.jpg
+└── icons/
+    └── close.svg
+```
+
+The generated `src/generated/assets.ts` will look like:
+
+```ts
+/**
+ * AUTO-GENERATED FILE - DO NOT EDIT
+ * Generated by react-assets-gen
+ * Generated at: 2025-12-14T17:30:00.000Z
+ */
+
+import closeSvgComponent from '../../assets/icons/close.svg?react';
+
+export interface AssetsType {
+  readonly images: {
+    readonly logo: string;
+    readonly products: {
+      readonly item1: string;
+    };
+  };
+  readonly icons: {
+    readonly close: string;
+  };
+}
+
+export const Assets: AssetsType = {
+  images: {
+    logo: '../../assets/images/logo.png',
+    products: {
+      item1: '../../assets/images/products/item-1.jpg',
     },
   },
-])
+  icons: {
+    close: '../../assets/icons/close.svg',
+  },
+} as const;
+
+export const SvgComponents = {
+  close: closeSvgComponent,
+} as const;
+
+export default Assets;
 ```
+
+## Naming Conventions
+
+File names are converted to camelCase identifiers:
+
+| File Name | Generated Identifier |
+|-----------|---------------------|
+| `logo.png` | `logo` |
+| `hero-image.jpg` | `heroImage` |
+| `user_avatar.png` | `userAvatar` |
+| `icon-2024.svg` | `icon2024` |
+| `my-logo.png` | `myLogo` |
+
+## TypeScript Path Aliases
+
+For cleaner imports, configure path aliases in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+Then import like:
+
+```tsx
+import { Assets } from '@/generated/assets';
+```
+
+## Best Practices
+
+1. **Commit Generated Files** - Commit `src/generated/assets.ts` to version control for consistency
+2. **Pre-build Generation** - Add `assets-gen` to your `prebuild` script
+3. **Watch Mode in Dev** - Run `assets-gen --watch` during development
+4. **Organize Assets** - Use folders to organize assets by type/feature
+5. **Optimize Assets** - Compress images before adding to assets folder
+
+## Troubleshooting
+
+### SVG Components Not Working
+
+Make sure you have `vite-plugin-svgr` installed and configured:
+
+```bash
+npm install --save-dev vite-plugin-svgr
+```
+
+### Module Not Found Errors
+
+Check that:
+- The generated file path is correct
+- TypeScript path aliases are configured
+- The assets directory exists
+
+### Assets Not Updating
+
+- Run `assets-gen` manually to regenerate
+- Check file permissions
+- Use `--verbose` flag for detailed logs
+
+## Requirements
+
+- **Node.js**: >= 18.0.0
+- **TypeScript**: >= 5.0.0 (for consuming projects)
+
+## License
+
+MIT
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Comparison with Flutter Assets Gen
+
+This tool brings the same developer experience from Flutter to React:
+
+| Feature | Flutter Assets Gen | React Assets Gen |
+|---------|-------------------|------------------|
+| Type Safety | ✅ | ✅ |
+| Auto-generation | ✅ | ✅ |
+| Watch Mode | ✅ | ✅ |
+| Nested Structure | ✅ | ✅ |
+| Zero Runtime Deps | ✅ | ✅ |
+| SVG Components | ❌ | ✅ |
+
+## Support
+
+For issues and questions, please open an issue on GitHub.
+
+---
+
+**Made with ❤️ for the React community**

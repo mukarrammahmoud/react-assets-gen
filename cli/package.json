@@ -1,0 +1,36 @@
+{
+  "name": "react-assets-gen",
+  "version": "1.0.0",
+  "description": "Production-ready React Assets Code Generator - Type-safe asset imports for React projects",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "assets-gen": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "react",
+    "assets",
+    "typescript",
+    "code-generator",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.3",
+    "commander": "^12.1.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
