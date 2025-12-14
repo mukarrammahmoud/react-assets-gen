@@ -7,18 +7,40 @@
   "bin": {
     "assets-gen": "./dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests yet\" && exit 0",
+    "verify": "node scripts/verify-package.js"
   },
   "keywords": [
     "react",
     "assets",
     "typescript",
     "code-generator",
-    "cli"
+    "cli",
+    "vite",
+    "webpack",
+    "asset-management",
+    "type-safe",
+    "code-generation",
+    "developer-tools"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/react-assets-gen.git",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/react-assets-gen/issues"
+  },
+  "homepage": "https://github.com/yourusername/react-assets-gen#readme",
   "author": "",
   "license": "MIT",
   "engines": {
