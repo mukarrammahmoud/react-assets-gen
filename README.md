@@ -1,6 +1,6 @@
 # React Assets Gen
 
-Production-ready React Assets Code Generator - Type-safe asset imports for React projects, similar to Flutter Assets Gen.
+Production-ready React Assets Code Generator - Type-safe asset imports for React projects.
 
 ## Features
 
@@ -346,19 +346,6 @@ MIT
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Comparison with Flutter Assets Gen
-
-This tool brings the same developer experience from Flutter to React:
-
-| Feature | Flutter Assets Gen | React Assets Gen |
-|---------|-------------------|------------------|
-| Type Safety | ✅ | ✅ |
-| Auto-generation | ✅ | ✅ |
-| Watch Mode | ✅ | ✅ |
-| Nested Structure | ✅ | ✅ |
-| Zero Runtime Deps | ✅ | ✅ |
-| SVG Components | ❌ | ✅ |
 
 ## Support
 
