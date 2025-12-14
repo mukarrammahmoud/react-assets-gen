@@ -108,10 +108,6 @@ function Header() {
 
 Create an `assets-gen.config.json` file in your project root:
 
-## Configuration
-
-Create an `assets-gen.config.json` file in your project root:
-
 ```json
 {
   "assetsDir": "src/assets",

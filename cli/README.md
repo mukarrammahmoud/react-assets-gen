@@ -110,13 +110,24 @@ Create an `assets-gen.config.json` file in your project root:
 
 ```json
 {
-  "assetsDir": "assets",
+  "assetsDir": "src/assets",
   "output": "src/generated/assets.ts",
   "svg": {
     "asComponent": true
   },
   "verbose": false
 }
+
+
+You can place your assets in any folder you like—just update the assetsDir path accordingly.
+
+assetsDir: Directory containing your assets (images, icons, SVGs).
+
+output: Path to the generated TypeScript file.
+
+svg.asComponent: Set to true to generate React components for SVGs.
+
+verbose: Set to true to log detailed information during generation.
 ```
 
 ### Configuration Options
