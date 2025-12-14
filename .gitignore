@@ -7,7 +7,7 @@ dist
 cli/dist
 build
 out
-
+src
 # Environment variables
 .env
 .env.local
