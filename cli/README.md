@@ -359,4 +359,4 @@ For issues and questions, please open an issue on GitHub.
 
 ---
 
-**Made with Mukarram Mahmoud for the React community**
+**Made with ❤️ by Mukarram for the React community**
