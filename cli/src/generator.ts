@@ -71,17 +71,27 @@ function generateTypeScriptCode(assetsObject: any, config: AssetsGenConfig): str
   lines.push(' */');
   lines.push('');
 
-  // SVG component imports (if enabled)
+  // Collect all assets to generate imports
+  const allAssets = collectAllAssets(assetsObject);
+  const assetImports = new Map<string, string>(); // path -> identifier
+
+  // Generate imports
   if (config.svg?.asComponent) {
     lines.push('// SVG React Components');
-    const svgAssets = collectSvgAssets(assetsObject);
-    for (const [identifier, importPath] of svgAssets) {
-      lines.push(`import ${identifier}Component from '${importPath}?react';`);
+    for (const { path: assetPath, identifier } of allAssets) {
+      if (assetPath.endsWith('.svg')) {
+        lines.push(`import ${identifier}ReactComponent from '${assetPath}?react';`);
+      }
     }
-    if (svgAssets.length > 0) {
-      lines.push('');
-    }
+    lines.push('');
   }
+
+  // Generate asset imports
+  for (const { path: assetPath, identifier } of allAssets) {
+    lines.push(`import ${identifier} from '${assetPath}';`);
+    assetImports.set(assetPath, identifier);
+  }
+  lines.push('');
 
   // Generate type definition
   lines.push('/**');
@@ -99,14 +109,15 @@ function generateTypeScriptCode(assetsObject: any, config: AssetsGenConfig): str
   lines.push(' * import { Assets } from "./generated/assets";');
   lines.push(' * <img src={Assets.images.logo} alt="Logo" />');
   lines.push(' */');
+  
   lines.push('export const Assets: AssetsType = {');
-  lines.push(generateObjectLiteral(assetsObject, 1));
+  lines.push(generateObjectLiteral(assetsObject, 1, assetImports));
   lines.push('} as const;');
   lines.push('');
 
   // SVG Components export (if enabled)
   if (config.svg?.asComponent) {
-    const svgAssets = collectSvgAssets(assetsObject);
+    const svgAssets = allAssets.filter(a => a.path.endsWith('.svg'));
     if (svgAssets.length > 0) {
       lines.push('/**');
       lines.push(' * SVG React Components');
@@ -115,9 +126,11 @@ function generateTypeScriptCode(assetsObject: any, config: AssetsGenConfig): str
       lines.push(' * <SvgComponents.icons.close />');
       lines.push(' */');
       lines.push('export const SvgComponents = {');
-      for (const [identifier] of svgAssets) {
-        lines.push(`  ${identifier}: ${identifier}Component,`);
+      
+      for (const { identifier } of svgAssets) {
+        lines.push(`  ${identifier}: ${identifier}ReactComponent,`);
       }
+      
       lines.push('} as const;');
       lines.push('');
     }
@@ -131,40 +144,52 @@ function generateTypeScriptCode(assetsObject: any, config: AssetsGenConfig): str
 }
 
 /**
- * Generates object literal code from nested structure
+ * Helper to collect all assets with unique identifiers
  */
-function generateObjectLiteral(obj: any, indentLevel: number): string {
+function collectAllAssets(obj: any, prefix: string = ''): Array<{ path: string, identifier: string }> {
+  const results: Array<{ path: string, identifier: string }> = [];
+
+  for (const [key, value] of Object.entries(obj)) {
+    // Create a base identifier from the key
+    // If we have a prefix (parent keys), append the current key capitalized
+    // e.g. icons -> react becomes iconsReact
+    const identifierBase = prefix 
+      ? `${prefix}${key.charAt(0).toUpperCase()}${key.slice(1)}` 
+      : key;
+
+    if (typeof value === 'string') {
+      // It's an asset path
+      results.push({ path: value, identifier: identifierBase });
+    } else if (typeof value === 'object' && value !== null) {
+      results.push(...collectAllAssets(value, identifierBase));
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Generates object literal code from nested structure using imported identifiers
+ */
+function generateObjectLiteral(obj: any, indentLevel: number, assetImports: Map<string, string>): string {
   const indent = '  '.repeat(indentLevel);
   const entries: string[] = [];
 
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'string') {
-      entries.push(`${indent}${key}: '${value}',`);
+      const identifier = assetImports.get(value);
+      if (identifier) {
+        entries.push(`${indent}${key}: ${identifier},`);
+      } else {
+        // Fallback (shouldn't happen if logic is correct)
+        entries.push(`${indent}${key}: '${value}',`);
+      }
     } else if (typeof value === 'object' && value !== null) {
       entries.push(`${indent}${key}: {`);
-      entries.push(generateObjectLiteral(value, indentLevel + 1));
+      entries.push(generateObjectLiteral(value, indentLevel + 1, assetImports));
       entries.push(`${indent}},`);
     }
   }
 
   return entries.join('\n');
-}
-
-/**
- * Collects all SVG assets for component generation
- */
-function collectSvgAssets(obj: any, prefix: string = ''): Array<[string, string]> {
-  const results: Array<[string, string]> = [];
-
-  for (const [key, value] of Object.entries(obj)) {
-    const identifier = prefix ? `${prefix}${key.charAt(0).toUpperCase()}${key.slice(1)}` : key;
-
-    if (typeof value === 'string' && value.endsWith('.svg')) {
-      results.push([identifier, value]);
-    } else if (typeof value === 'object' && value !== null) {
-      results.push(...collectSvgAssets(value, identifier));
-    }
-  }
-
-  return results;
 }

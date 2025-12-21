@@ -1,8 +1,0 @@
-{
-    "assetsDir": "assets",
-    "output": "src/generated/assets.ts",
-    "svg": {
-        "asComponent": true
-    },
-    "verbose": false
-}

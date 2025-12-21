@@ -1,6 +1,6 @@
 {
   "name": "react-assets-gen",
-  "version": "1.0.4",
+  "version": "1.0.8",
   "description": "Production-ready React Assets Code Generator - Type-safe asset imports for React projects",
   "type": "module",
   "main": "./dist/index.js",
@@ -13,8 +13,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
     "prepublishOnly": "npm run build",
     "test": "echo \"No tests yet\" && exit 0",
     "verify": "node scripts/verify-package.js"
@@ -34,14 +34,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/react-assets-gen.git",
+    "url": "https://github.com/mukarrammahmoud/react-assets-gen.git",
     "directory": "cli"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/react-assets-gen/issues"
+    "url": "https://github.com/mukarrammahmoud/react-assets-gen/issues"
   },
-  "homepage": "https://github.com/yourusername/react-assets-gen#readme",
-  "author": "",
+  "homepage": "https://github.com/mukarrammahmoud/react-assets-gen#readme",
+  "author": "Mukarram Mahmoud",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
